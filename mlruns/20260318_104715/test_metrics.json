@@ -1,0 +1,8 @@
+{
+  "model": "Logistic Regression",
+  "split": "test",
+  "f1": 0.5106,
+  "precision": 0.5217,
+  "recall": 0.5,
+  "timestamp": "2026-03-18 10:47:15"
+}

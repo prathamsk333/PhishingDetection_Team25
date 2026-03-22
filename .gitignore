@@ -1,0 +1,11 @@
+.env
+.Rhistory
+.RData
+.Ruserdata
+Artifacts/
+final_model/
+logs/
+prediction_output/
+saved_models/
+*.rds
+*.log

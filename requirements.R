@@ -1,0 +1,13 @@
+plumber
+dotenv
+mongolite
+yaml
+caret
+randomForest
+gbm
+e1071
+RANN
+logger
+dplyr
+C50
+jsonlite
