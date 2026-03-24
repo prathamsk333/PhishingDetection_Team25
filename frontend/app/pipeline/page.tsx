@@ -6,7 +6,6 @@ export default function Pipeline() {
       description: 'Fetches phishing detection data from MongoDB and performs train/test split.',
       details: [
         'Connects to MongoDB collection (networksecurity_db.network_data)',
-        'Falls back to mock data generation if MongoDB unavailable',
         'Performs 80/20 train-test split with seed=42',
         'Saves raw data to feature store as CSV',
         'Outputs: train.csv, test.csv',

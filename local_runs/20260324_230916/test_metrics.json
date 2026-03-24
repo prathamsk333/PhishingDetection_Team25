@@ -1,0 +1,8 @@
+{
+  "model": "C5.0 Boosting",
+  "split": "test",
+  "f1": 0.9752,
+  "precision": 0.9628,
+  "recall": 0.9878,
+  "timestamp": "2026-03-24 23:09:16"
+}

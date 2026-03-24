@@ -86,9 +86,11 @@ function(res) {
       return(list(status = "error", message = "Model not found. Please train the model first."))
     }
     
-    # Find the most recent mlruns folder
-    mlruns_dirs <- list.dirs("mlruns", recursive = FALSE, full.names = TRUE)
-    if (length(mlruns_dirs) == 0) {
+    # Find the most recent local_runs folder containing metrics
+    local_dirs <- list.dirs("local_runs", recursive = FALSE, full.names = TRUE)
+    valid_dirs <- local_dirs[file.exists(file.path(local_dirs, "train_metrics.json"))]
+    
+    if (length(valid_dirs) == 0) {
       return(list(
         status = "success",
         model_name = "Unknown",
@@ -96,8 +98,9 @@ function(res) {
       ))
     }
     
-    # Get the most recent run
-    latest_run <- mlruns_dirs[length(mlruns_dirs)]
+    # Sort alphabetically (since they are named YYYYMMDD_HHMMSS, this is chronological)
+    valid_dirs <- sort(valid_dirs)
+    latest_run <- valid_dirs[length(valid_dirs)]
     
     # Read metrics
     train_metrics_path <- file.path(latest_run, "train_metrics.json")

@@ -73,11 +73,23 @@ export default function Home() {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-neutral-600">Test F1 Score</span>
-                <span className="text-sm font-medium">{modelInfo.test_f1?.toFixed(4) || 'N/A'}</span>
+                <span className="text-sm font-medium">
+                  {typeof modelInfo.test_f1 === 'number'
+                    ? modelInfo.test_f1.toFixed(4)
+                    : (Number(modelInfo.test_f1)
+                        ? Number(modelInfo.test_f1).toFixed(4)
+                        : 'N/A')}
+                </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-neutral-600">Test Precision</span>
-                <span className="text-sm font-medium">{modelInfo.test_precision?.toFixed(4) || 'N/A'}</span>
+                <span className="text-sm font-medium">
+                  {typeof modelInfo.test_precision === 'number'
+                    ? modelInfo.test_precision.toFixed(4)
+                    : (Number(modelInfo.test_precision)
+                        ? Number(modelInfo.test_precision).toFixed(4)
+                        : 'N/A')}
+                </span>
               </div>
             </div>
           ) : (

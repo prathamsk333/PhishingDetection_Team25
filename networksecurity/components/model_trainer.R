@@ -32,7 +32,7 @@ ModelTrainer <- function(model_trainer_config, data_transformation_artifact) {
 # ---- Local experiment tracking (no external service needed) ----
 track_experiment <- function(model_name, metric_artifact, split = "train") {
   tryCatch({
-    run_dir <- file.path("mlruns", format(Sys.time(), "%Y%m%d_%H%M%S"))
+    run_dir <- file.path("local_runs", format(Sys.time(), "%Y%m%d_%H%M%S"))
     dir.create(run_dir, recursive = TRUE, showWarnings = FALSE)
     entry <- list(
       model      = model_name,
@@ -128,6 +128,25 @@ initiate_model_trainer <- function(self) {
     dir.create(dirname(self$config$trained_model_file_path), recursive = TRUE, showWarnings = FALSE)
     save_object(self$config$trained_model_file_path, network_model)
     save_object(file.path("final_model", "model.rds"), result$best_fit)
+
+    # MLflow Integration
+    tryCatch({
+      if (requireNamespace("mlflow", quietly = TRUE)) {
+        ns_log_info("Logging metrics to MLflow...")
+        mlflow::mlflow_set_experiment("Network Security")
+        mlflow::with(mlflow::mlflow_start_run(), {
+          mlflow::mlflow_log_param("best_model", result$best_name)
+          mlflow::mlflow_log_metric("train_f1", result$train_metric$f1_score)
+          mlflow::mlflow_log_metric("train_precision", result$train_metric$precision_score)
+          mlflow::mlflow_log_metric("train_recall", result$train_metric$recall_score)
+          mlflow::mlflow_log_metric("test_f1", result$test_metric$f1_score)
+          mlflow::mlflow_log_metric("test_precision", result$test_metric$precision_score)
+          mlflow::mlflow_log_metric("test_recall", result$test_metric$recall_score)
+        })
+      }
+    }, error = function(e) {
+      ns_log_warning(paste("MLflow logging failed:", e$message))
+    })
 
     ns_log_info("Model Trainer completed.")
 
