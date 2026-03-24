@@ -60,8 +60,8 @@ export default function Pipeline() {
       </div>
 
       {/* Pipeline Flow Diagram */}
-      <div className="mb-16 border border-neutral-200 p-8">
-        <div className="flex items-center justify-between">
+      <div className="mb-16 border border-neutral-200 p-8 overflow-x-auto">
+        <div className="flex items-center justify-between min-w-max">
           {stages.map((stage, idx) => (
             <div key={stage.number} className="flex items-center">
               <div className="text-center">

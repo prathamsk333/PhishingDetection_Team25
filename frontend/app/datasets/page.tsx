@@ -55,8 +55,8 @@ export default function Datasets() {
       ) : data ? (
         <>
           {/* Controls */}
-          <div className="mb-6 flex items-center justify-between">
-            <div className="flex gap-4 border-b border-neutral-200">
+          <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex gap-4 border-b border-neutral-200 w-full md:w-auto overflow-x-auto">
               <button
                 onClick={() => setActiveTab('train')}
                 className={`pb-3 px-1 text-sm font-medium transition-colors ${

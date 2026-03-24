@@ -79,7 +79,7 @@ export default function Model() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-16">
-      <div className="mb-16 flex items-center justify-between">
+      <div className="mb-16 flex flex-col md:flex-row md:items-center py-4 justify-between gap-6">
         <div>
           <h1 className="text-4xl font-bold tracking-tight mb-4">Model Training</h1>
           <p className="text-neutral-600 max-w-2xl">

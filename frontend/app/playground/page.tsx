@@ -96,7 +96,7 @@ export default function Playground() {
       )}
 
       {/* Tabs */}
-      <div className="flex gap-4 mb-8 border-b border-neutral-200">
+      <div className="flex gap-4 mb-8 border-b border-neutral-200 overflow-x-auto">
         <button
           onClick={() => setActiveTab('generate')}
           className={`pb-3 px-1 text-sm font-medium transition-colors ${
