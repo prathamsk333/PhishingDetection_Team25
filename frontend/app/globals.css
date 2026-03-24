@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+* {
+  border-color: rgb(229 229 229);
+}
+
+body {
+  background-color: white;
+  color: black;
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+.text-balance {
+  text-wrap: balance;
+}

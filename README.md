@@ -59,9 +59,13 @@ The API is served directly via `app.R` / `server.R` running on port 8000.
 | Method | Endpoint | Description |
 | :---: | :--- | :--- |
 | **GET** | `/` | Redirects to the fully interactive Swagger Documentation. |
+| **GET** | `/health` | Check server status and model availability. |
+| **GET** | `/model/info` | Get current model metadata and performance metrics. |
+| **GET** | `/features/schema` | Get all 31 feature names with descriptions. |
 | **GET** | `/train` | Triggers the complete ML pipeline asynchronously. |
 | **POST** | `/predict` | Accept a CSV file upload, returning phishing predictions. |
 | **POST** | `/predict_json` | Accepts JSON payload for real-time inference. |
+| **GET** | `/generate_test_data` | Generate random test data (phishing/legitimate/random). |
 
 ---
 
@@ -96,6 +100,14 @@ Rscript main.R
 ```bash
 Rscript server.R
 # Check out the Swagger UI at http://localhost:8000/__docs__/
+```
+
+**Run the Frontend:**
+```bash
+cd frontend
+npm install
+npm run dev
+# Open http://localhost:3000 in your browser
 ```
 
 ---
