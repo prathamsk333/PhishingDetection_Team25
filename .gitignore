@@ -7,5 +7,6 @@ final_model/
 logs/
 prediction_output/
 saved_models/
+mlruns/
 *.rds
 *.log
