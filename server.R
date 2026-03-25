@@ -1,8 +1,10 @@
 library(plumber)
 library(dotenv)
 
-# Ensure environment is loaded before starting the API
-dotenv::load_dot_env(file = ".env")
+# Ensure environment is loaded before starting the API (only if file exists)
+if (file.exists(".env")) {
+  dotenv::load_dot_env(file = ".env")
+}
 
 cat("Starting Plumber API...\n")
 pr <- plumber::plumb(file = "app.R")

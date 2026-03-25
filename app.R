@@ -8,16 +8,24 @@ library(plumber)
 library(dotenv)
 library(mongolite)
 
-# Load environment variables from .env
-dotenv::load_dot_env(file = ".env")
+# Load environment variables from .env (only if file exists)
+if (file.exists(".env")) {
+  dotenv::load_dot_env(file = ".env")
+}
 
-# Source pipeline and utilities
-source(file.path("networksecurity", "pipeline",  "training_pipeline.R"))
+# Source utilities (needed for predictions)
 source(file.path("networksecurity", "utils", "main_utils", "utils.R"))
 source(file.path("networksecurity", "utils", "ml_utils", "model", "estimator.R"))
 source(file.path("networksecurity", "logging",   "logger.R"))
 source(file.path("networksecurity", "exception", "exception.R"))
-source(file.path("networksecurity", "constants", "training_pipeline.R"))
+
+# Source training pipeline only if training packages are available
+# (not needed for production API with pre-trained model)
+if (requireNamespace("gbm", quietly = TRUE) && 
+    requireNamespace("randomForest", quietly = TRUE)) {
+  source(file.path("networksecurity", "pipeline",  "training_pipeline.R"))
+  source(file.path("networksecurity", "constants", "training_pipeline.R"))
+}
 
 # MongoDB connection (used for reading live data)
 mongo_url      <- Sys.getenv("MONGODB_URL_KEY")
@@ -183,6 +191,64 @@ function() {
 #* @serializer unboxedJSON
 function() {
   tryCatch({
+    # Check if training pipeline is available
+    if (!exists("TrainingPipeline")) {
+      # Production mode - return existing model info
+      ns_log_info("Training pipeline not available - returning existing model")
+      
+      if (!file.exists(file.path("final_model", "model.rds"))) {
+        return(list(
+          status = "error",
+          message = "Model not found and training pipeline not available in production build."
+        ))
+      }
+      
+      # Simulate training delay for UX
+      delay_secs <- sample(3:4, 1)
+      ns_log_info(sprintf("Simulating training delay of %d seconds...", delay_secs))
+      Sys.sleep(delay_secs)
+      
+      # Find the most recent local_runs folder containing metrics
+      local_dirs <- list.dirs("local_runs", recursive = FALSE, full.names = TRUE)
+      valid_dirs <- local_dirs[file.exists(file.path(local_dirs, "train_metrics.json"))]
+      
+      if (length(valid_dirs) == 0) {
+        return(list(
+          status = "success",
+          message = "Model exists but no training metrics found.",
+          model_name = "Unknown"
+        ))
+      }
+      
+      valid_dirs <- sort(valid_dirs)
+      latest_run <- valid_dirs[length(valid_dirs)]
+      
+      train_metrics_path <- file.path(latest_run, "train_metrics.json")
+      test_metrics_path  <- file.path(latest_run, "test_metrics.json")
+      
+      train_metrics <- if (file.exists(train_metrics_path)) jsonlite::fromJSON(train_metrics_path) else list(f1 = NA, precision = NA, recall = NA)
+      test_metrics  <- if (file.exists(test_metrics_path))  jsonlite::fromJSON(test_metrics_path)  else list(f1 = NA, precision = NA, recall = NA)
+      
+      return(list(
+        status = "success",
+        message = "Returning existing model (training skipped).",
+        model_name = if (!is.null(train_metrics$model)) train_metrics$model else "Unknown",
+        train_metrics = list(
+          f1        = if (!is.na(train_metrics$f1))        round(train_metrics$f1, 4)        else NULL,
+          precision = if (!is.na(train_metrics$precision)) round(train_metrics$precision, 4) else NULL,
+          recall    = if (!is.na(train_metrics$recall))    round(train_metrics$recall, 4)    else NULL
+        ),
+        test_metrics = list(
+          f1        = if (!is.na(test_metrics$f1))        round(test_metrics$f1, 4)        else NULL,
+          precision = if (!is.na(test_metrics$precision)) round(test_metrics$precision, 4) else NULL,
+          recall    = if (!is.na(test_metrics$recall))    round(test_metrics$recall, 4)    else NULL
+        ),
+        model_path = file.path("final_model", "model.rds"),
+        trained_at = if (!is.null(train_metrics$timestamp)) train_metrics$timestamp else basename(latest_run)
+      ))
+    }
+    
+    # Training pipeline available - train new model
     ns_log_info("Training triggered via API")
     pipeline <- TrainingPipeline()
     artifact <- run_pipeline(pipeline)

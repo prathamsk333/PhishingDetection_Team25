@@ -1,0 +1,36 @@
+# Git and version control
+.git
+.github
+.gitignore
+
+# Environment files (will be set via fly secrets)
+.env
+
+# IDE and editor files
+.vscode
+.Rhistory
+.RData
+.Ruserdata
+
+# Frontend (not needed for backend)
+frontend/
+
+# Documentation
+*.md
+FRONTEND_SETUP.md
+
+# Test files
+requests.http
+sample_predict.csv
+
+# Logs (will be generated at runtime)
+logs/
+*.log
+
+# Runtime artifacts (will be generated)
+prediction_output/
+
+# Keep these - they're needed:
+# final_model/ - INCLUDE (contains trained model)
+# Artifacts/ - INCLUDE (contains training data)
+# networksecurity/ - INCLUDE (source code)
