@@ -1,4 +1,6 @@
 export default function ApiDocs() {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+  
   const endpoints = [
     {
       method: 'GET',
@@ -101,10 +103,10 @@ export default function ApiDocs() {
         <div className="flex items-center gap-4">
           <div className="text-sm">
             <span className="text-neutral-500">Base URL:</span>{' '}
-            <code className="bg-neutral-100 px-2 py-1 font-mono text-xs">http://localhost:8000</code>
+            <code className="bg-neutral-100 px-2 py-1 font-mono text-xs">{apiUrl}</code>
           </div>
           <a
-            href="http://localhost:8000/__docs__/"
+            href={`${apiUrl}/__docs__/`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm text-neutral-600 hover:text-black underline"

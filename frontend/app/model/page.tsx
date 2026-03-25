@@ -9,7 +9,8 @@ export default function Model() {
   const [showModal, setShowModal] = useState(false);
   const [trainingResult, setTrainingResult] = useState<TrainingResult | null>(null);
   const [trainingError, setTrainingError] = useState<string | null>(null);
-const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [showLoadingTransition, setShowLoadingTransition] = useState(false);
 
   useEffect(() => {
     loadModelInfo();
@@ -26,18 +27,32 @@ const [showConfirmDialog, setShowConfirmDialog] = useState(false);
     setShowModal(true);
     setTrainingError(null);
     setTrainingResult(null);
+    setShowLoadingTransition(false);
 
     try {
       const result = await api.train();
-      setTrainingResult(result);
-      // Reload model info after training
-      setTimeout(() => {
+      setIsTraining(false);
+      
+      // Check if it was a pre-existing model
+      const isPreExisting = result.message?.includes('existing model') || result.message?.includes('training skipped');
+      
+      if (isPreExisting) {
+        // Show transition screen for 2 seconds
+        setShowLoadingTransition(true);
+        setTimeout(() => {
+          setShowLoadingTransition(false);
+          setTrainingResult(result);
+          loadModelInfo();
+        }, 2000);
+      } else {
+        // New training - show results immediately
+        setTrainingResult(result);
         loadModelInfo();
-      }, 1000);
+      }
     } catch (error) {
       setTrainingError(error instanceof Error ? error.message : 'Training failed');
-    } finally {
       setIsTraining(false);
+      setShowLoadingTransition(false);
     }
   };
 
@@ -45,6 +60,7 @@ const [showConfirmDialog, setShowConfirmDialog] = useState(false);
     setShowModal(false);
     setTrainingResult(null);
     setTrainingError(null);
+    setShowLoadingTransition(false);
   };
 
   const models = [
@@ -131,7 +147,7 @@ const [showConfirmDialog, setShowConfirmDialog] = useState(false);
             <div className="p-8">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-semibold">Model Training</h2>
-                {!isTraining && (
+                {!isTraining && !showLoadingTransition && (
                   <button
                     onClick={closeModal}
                     className="text-neutral-500 hover:text-black text-2xl leading-none cursor-pointer"
@@ -157,6 +173,19 @@ const [showConfirmDialog, setShowConfirmDialog] = useState(false);
                 </div>
               )}
 
+              {showLoadingTransition && (
+                <div className="text-center py-12">
+                  <div className="inline-block w-16 h-16 border-4 border-neutral-200 border-t-green-500 rounded-full animate-spin mb-6"></div>
+                  <h3 className="text-lg font-medium mb-2">Pre-existing Model Found</h3>
+                  <p className="text-sm text-neutral-600 mb-4">
+                    Trained model already exists. Loading model...
+                  </p>
+                  <div className="mt-6 text-sm text-neutral-500">
+                    <div className="animate-pulse">Retrieving model metadata...</div>
+                  </div>
+                </div>
+              )}
+
               {trainingError && (
                 <div className="border-2 border-red-500 bg-red-50 p-6">
                   <h3 className="font-semibold text-red-900 mb-2">Training Failed</h3>
@@ -164,12 +193,21 @@ const [showConfirmDialog, setShowConfirmDialog] = useState(false);
                 </div>
               )}
 
-              {trainingResult && trainingResult.status === 'success' && (
+              {!isTraining && !showLoadingTransition && trainingResult && trainingResult.status === 'success' && (
                 <div>
                   <div className="border-2 border-green-500 bg-green-50 p-6 mb-6">
                     <div className="text-center mb-4">
                       <div className="text-4xl mb-2">✓</div>
-                      <h3 className="text-lg font-semibold text-green-900">Training Complete!</h3>
+                      <h3 className="text-lg font-semibold text-green-900">
+                        {trainingResult.message?.includes('existing model') || trainingResult.message?.includes('training skipped')
+                          ? 'Model Loaded Successfully!'
+                          : 'Training Complete!'}
+                      </h3>
+                      {(trainingResult.message?.includes('existing model') || trainingResult.message?.includes('training skipped')) && (
+                        <p className="text-sm text-green-800 mt-2">
+                          Using pre-trained model from previous training session
+                        </p>
+                      )}
                     </div>
                   </div>
 
