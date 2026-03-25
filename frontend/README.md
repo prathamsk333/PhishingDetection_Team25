@@ -7,6 +7,7 @@ A minimalist Next.js frontend for the Network Security Phishing Detection ML sys
 - **Playground**: Interactive test data generation and real-time prediction
 - **Pipeline**: Visual explanation of the 4-stage ML pipeline
 - **Model**: Model training process and performance metrics
+- **Datasets**: Browse training/test data with pagination and CSV export
 - **API Docs**: Complete REST API documentation
 
 ## Getting Started
@@ -63,6 +64,7 @@ app/
 ├── playground/page.tsx   # Test data generator & predictor
 ├── pipeline/page.tsx     # Pipeline explanation
 ├── model/page.tsx        # Model training details
+├── datasets/page.tsx     # Dataset viewer with pagination
 ├── api-docs/page.tsx     # API documentation
 └── layout.tsx            # Shared layout with navigation
 

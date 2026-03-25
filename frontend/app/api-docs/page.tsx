@@ -91,6 +91,37 @@ export default function ApiDocs() {
         message: 'Training completed successfully.',
       },
     },
+    {
+      method: 'GET',
+      path: '/data/splits',
+      description: 'Get paginated dataset splits (train/test data)',
+      params: [
+        { name: 'split', type: 'string', description: 'train | test | all (default: all)' },
+        { name: 'page', type: 'number', description: 'Page number (default: 1)' },
+        { name: 'page_size', type: 'number', description: 'Rows per page (max: 100)' },
+      ],
+      response: {
+        status: 'success',
+        artifact: '03_24_2026_20_12_43',
+        train: {
+          total_rows: 8523,
+          total_pages: 86,
+          current_page: 1,
+          data: ['... paginated rows'],
+        },
+      },
+    },
+    {
+      method: 'GET',
+      path: '/data/export',
+      description: 'Export complete dataset split to CSV file',
+      params: [
+        { name: 'split', type: 'string', description: 'train | test (required)' },
+      ],
+      response: {
+        note: 'Returns CSV file download',
+      },
+    },
   ];
 
   return (

@@ -351,18 +351,26 @@ function(req, res) {
 }
 
 # ----------------------------------------------------------------
-#* Get dataset splits (train/test/validation data)
+#* Get dataset splits (train/test/validation data) with pagination
 #* @get /data/splits
 #* @param split:character Which split to retrieve: "train", "test", or "all" (default: "all")
-#* @param limit:int Maximum number of rows to return per split (default: 100, max: 1000)
+#* @param page:int Page number (default: 1)
+#* @param page_size:int Rows per page (default: 20, max: 1000)
 #* @serializer json
-function(split = "all", limit = 100, res) {
+function(split = "all", page = 1, page_size = 20, res) {
   tryCatch({
-    # Validate limit
-    limit <- as.integer(limit)
-    if (is.na(limit) || limit < 1 || limit > 1000) {
+    # Validate page and page_size
+    page <- as.integer(page)
+    page_size <- as.integer(page_size)
+    
+    if (is.na(page) || page < 1) {
       res$status <- 400
-      return(list(status = "error", message = "Limit must be between 1 and 1000"))
+      return(list(status = "error", message = "Page must be >= 1"))
+    }
+    
+    if (is.na(page_size) || page_size < 1 || page_size > 1000) {
+      res$status <- 400
+      return(list(status = "error", message = "Page size must be between 1 and 1000"))
     }
     
     # Find the most recent artifact directory
@@ -374,7 +382,7 @@ function(split = "all", limit = 100, res) {
     
     latest_artifact <- artifact_dirs[length(artifact_dirs)]
     
-    # Helper function to load and sample data
+    # Helper function to load and paginate data
     load_split_data <- function(split_name) {
       # Try validated data first, then ingested
       validated_path <- file.path(latest_artifact, "data_validation", "validated", paste0(split_name, ".csv"))
@@ -390,18 +398,28 @@ function(split = "all", limit = 100, res) {
         return(NULL)
       }
       
-      # Sample if needed
+      # Pagination
       total_rows <- nrow(data)
-      if (total_rows > limit) {
-        data <- data[sample(total_rows, limit), ]
+      total_pages <- ceiling(total_rows / page_size)
+      
+      start_idx <- (page - 1) * page_size + 1
+      end_idx <- min(page * page_size, total_rows)
+      
+      if (start_idx > total_rows) {
+        paginated_data <- data[0, ]  # Empty dataframe with same structure
+      } else {
+        paginated_data <- data[start_idx:end_idx, ]
       }
       
       list(
         split = split_name,
         source = source,
         total_rows = total_rows,
-        returned_rows = nrow(data),
-        data = data
+        total_pages = total_pages,
+        current_page = page,
+        page_size = page_size,
+        returned_rows = nrow(paginated_data),
+        data = paginated_data
       )
     }
     
@@ -432,6 +450,50 @@ function(split = "all", limit = 100, res) {
     }
     
     result
+  }, error = function(e) {
+    res$status <- 500
+    list(status = "error", message = conditionMessage(e))
+  })
+}
+
+# ----------------------------------------------------------------
+#* Export dataset split to CSV
+#* @get /data/export
+#* @param split:character Which split to export: "train" or "test" (required)
+#* @serializer csv
+function(split, res) {
+  tryCatch({
+    if (missing(split) || !split %in% c("train", "test")) {
+      res$status <- 400
+      return(list(status = "error", message = "Split must be 'train' or 'test'"))
+    }
+    
+    # Find the most recent artifact directory
+    artifact_dirs <- list.dirs("Artifacts", recursive = FALSE, full.names = TRUE)
+    if (length(artifact_dirs) == 0) {
+      res$status <- 404
+      return(list(status = "error", message = "No training artifacts found"))
+    }
+    
+    latest_artifact <- artifact_dirs[length(artifact_dirs)]
+    
+    # Try validated data first, then ingested
+    validated_path <- file.path(latest_artifact, "data_validation", "validated", paste0(split, ".csv"))
+    ingested_path <- file.path(latest_artifact, "data_ingestion", "ingested", paste0(split, ".csv"))
+    
+    if (file.exists(validated_path)) {
+      data <- read.csv(validated_path, stringsAsFactors = FALSE)
+    } else if (file.exists(ingested_path)) {
+      data <- read.csv(ingested_path, stringsAsFactors = FALSE)
+    } else {
+      res$status <- 404
+      return(list(status = "error", message = sprintf("No %s data found", split)))
+    }
+    
+    # Set download headers
+    res$setHeader("Content-Disposition", sprintf('attachment; filename="%s_data.csv"', split))
+    
+    data
   }, error = function(e) {
     res$status <- 500
     list(status = "error", message = conditionMessage(e))

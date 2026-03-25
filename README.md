@@ -74,6 +74,8 @@ The API is served directly via `app.R` / `server.R` running on port 8000.
 | **POST** | `/predict` | Accept a CSV file upload, returning phishing predictions. |
 | **POST** | `/predict_json` | Accepts JSON payload for real-time inference. |
 | **GET** | `/generate_test_data` | Generate random test data (phishing/legitimate/random). |
+| **GET** | `/data/splits` | Get paginated dataset splits with pagination support (max 100 rows/page). |
+| **GET** | `/data/export` | Export complete dataset split (train/test) to CSV file. |
 
 ---
 

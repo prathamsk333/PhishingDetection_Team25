@@ -12,3 +12,4 @@ dplyr
 C50
 jsonlite
 mlflow
+readr

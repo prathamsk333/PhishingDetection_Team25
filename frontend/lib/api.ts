@@ -63,6 +63,9 @@ export interface DataSplit {
   split: string;
   source: string;
   total_rows: number;
+  total_pages: number;
+  current_page: number;
+  page_size: number;
   returned_rows: number;
   data: any[];
 }
@@ -145,11 +148,22 @@ export const api = {
     }
   },
 
-  async getDataSplits(split: 'train' | 'test' | 'all' = 'all', limit: number = 100): Promise<DataSplitsResult> {
+  async getDataSplits(split: 'train' | 'test' | 'all' = 'all', page: number = 1, pageSize: number = 20): Promise<DataSplitsResult> {
     try {
-      const res = await fetch(`${API_BASE_URL}/data/splits?split=${split}&limit=${limit}`);
+      const res = await fetch(`${API_BASE_URL}/data/splits?split=${split}&page=${page}&page_size=${pageSize}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return res.json();
+    } catch (error) {
+      console.error('API Error:', error);
+      throw error;
+    }
+  },
+
+  async exportDataSplit(split: 'train' | 'test'): Promise<Blob> {
+    try {
+      const res = await fetch(`${API_BASE_URL}/data/export?split=${split}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.blob();
     } catch (error) {
       console.error('API Error:', error);
       throw error;

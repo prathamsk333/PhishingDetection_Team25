@@ -5,6 +5,7 @@ mongolite
 yaml
 jsonlite
 logger
+readr
 
 # # Model inference (caret is needed to load saved models)
 caret
