@@ -12,6 +12,14 @@
 
 ---
 
+## 🌐 Live Application
+
+**Try it now:** [https://networksecurityx.vercel.app/](https://networksecurityx.vercel.app/)
+
+Interactive web interface for phishing detection with real-time predictions, model training, and dataset exploration.
+
+---
+
 ## 🎯 The Vision
 Modern cybersecurity relies on rapid, accurate detection of threats. This project provides a complete Machine Learning ecosystem to **detect phishing URLs**, ported entirely from Python into idiomatic **R**. It's designed not just as a model, but as a fully operationalized service ready for production.
 
