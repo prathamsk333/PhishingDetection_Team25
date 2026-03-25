@@ -59,7 +59,7 @@ export default function Datasets() {
             <div className="flex gap-4 border-b border-neutral-200 w-full md:w-auto overflow-x-auto">
               <button
                 onClick={() => setActiveTab('train')}
-                className={`pb-3 px-1 text-sm font-medium transition-colors ${
+                className={`pb-3 px-1 text-sm font-medium transition-colors cursor-pointer ${
                   activeTab === 'train'
                     ? 'border-b-2 border-black text-black'
                     : 'text-neutral-500 hover:text-black'
@@ -74,7 +74,7 @@ export default function Datasets() {
               </button>
               <button
                 onClick={() => setActiveTab('test')}
-                className={`pb-3 px-1 text-sm font-medium transition-colors ${
+                className={`pb-3 px-1 text-sm font-medium transition-colors cursor-pointer ${
                   activeTab === 'test'
                     ? 'border-b-2 border-black text-black'
                     : 'text-neutral-500 hover:text-black'
@@ -104,7 +104,7 @@ export default function Datasets() {
               </select>
               <button
                 onClick={loadData}
-                className="px-4 py-1 bg-black text-white text-sm hover:opacity-80 transition-opacity"
+                className="px-4 py-1 bg-black text-white text-sm hover:opacity-80 transition-opacity cursor-pointer"
               >
                 Refresh
               </button>

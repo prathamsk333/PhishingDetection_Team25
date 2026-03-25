@@ -9,6 +9,7 @@ export default function Model() {
   const [showModal, setShowModal] = useState(false);
   const [trainingResult, setTrainingResult] = useState<TrainingResult | null>(null);
   const [trainingError, setTrainingError] = useState<string | null>(null);
+const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
   useEffect(() => {
     loadModelInfo();
@@ -19,6 +20,8 @@ export default function Model() {
   };
 
   const handleTrain = async () => {
+    
+    setShowConfirmDialog(false);
     setIsTraining(true);
     setShowModal(true);
     setTrainingError(null);
@@ -87,13 +90,39 @@ export default function Model() {
           </p>
         </div>
         <button
-          onClick={handleTrain}
+          onClick={() => setShowConfirmDialog(true)}
           disabled={isTraining}
-          className="px-6 py-3 bg-black text-white text-sm font-medium hover:opacity-80 transition-opacity disabled:opacity-50"
+          className="px-6 py-3 bg-black text-white text-sm font-medium hover:opacity-80 transition-opacity disabled:opacity-50 cursor-pointer"
         >
           {isTraining ? 'Training...' : 'Train New Model'}
         </button>
       </div>
+
+      {/* Confirmation Dialog */}
+      {showConfirmDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-6">
+          <div className="bg-white max-w-lg w-full p-6 rounded-md">
+            <h2 className="text-xl font-bold mb-4">Confirm Training</h2>
+            <p className="text-sm text-neutral-600 mb-4">
+              You won&apos;t be able to use the model while it&apos;s training. Do you want to proceed?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setShowConfirmDialog(false)}
+                className="px-4 py-2 text-sm text-gray-600 bg-gray-100 rounded hover:bg-gray-200 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleTrain}
+                className="px-4 py-2 text-sm text-white bg-black rounded hover:opacity-80 cursor-pointer"
+              >
+                Proceed
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Training Modal */}
       {showModal && (
@@ -105,7 +134,7 @@ export default function Model() {
                 {!isTraining && (
                   <button
                     onClick={closeModal}
-                    className="text-neutral-500 hover:text-black text-2xl leading-none"
+                    className="text-neutral-500 hover:text-black text-2xl leading-none cursor-pointer"
                   >
                     ×
                   </button>
@@ -270,7 +299,7 @@ export default function Model() {
 
                   <button
                     onClick={closeModal}
-                    className="w-full mt-6 px-6 py-3 bg-black text-white text-sm font-medium hover:opacity-80 transition-opacity"
+                    className="w-full mt-6 px-6 py-3 bg-black text-white text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer"
                   >
                     Close
                   </button>
