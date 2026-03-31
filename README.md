@@ -184,8 +184,8 @@ docker run -p 8000:8000 --env-file .env networksecurity-r
 ```
 ---
 
-#Contribution
--Data preprocessing and data ingestion,PPT -Aryan
+##Contribution
+-Data preprocessing and data ingestion,PPT-Aryan
 -Data Transformation and Validation-Pratham
 -Model training and Artifacts-Arjun
 -Frontend, API handling-Akhil
