@@ -182,15 +182,12 @@ docker build -t networksecurity-r .
 # Run the container (passes environment variables)
 docker run -p 8000:8000 --env-file .env networksecurity-r
 ```
----
+## Contribution
 
-##Contribution
--Data preprocessing and data ingestion,PPT-Aryan
--Data Transformation and Validation-Pratham
--Model training and Artifacts-Arjun
--Frontend, API handling-Akhil
-
----
+- Aryan | Data ingestion from MongoDB, data preprocessing, initial EDA, PPT preparation  
+- Pratham | Data transformation, feature engineering, data validation 
+- Arjun | Model training, hyperparameter tuning, model evaluation, artifact generation  
+- Akhil | Frontend development, API implementation using Plumber, model integration, deployment
 
 ## ⚙️ Continuous Integration / Continuous Deployment (CI/CD)
 
