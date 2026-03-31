@@ -12,11 +12,55 @@
 
 ---
 
+## Team Members
+- Pratham – 2023BCS0201  
+- Akhil – 2023BCD0015
+- Arjun – 2023BCS0135
+- Aryan – 2023BCD0012
+---
+
+---
+
+## Problem Statement
+Phishing attacks are a major cybersecurity threat where malicious URLs trick users into revealing sensitive information. Manual detection is inefficient and unreliable. This project builds a machine learning system to automatically classify URLs as phishing or legitimate.
+
+---
+
+## Objectives
+- Build a phishing detection ML model  
+- Perform data preprocessing and validation  
+- Train and compare multiple models  
+- Select best model using evaluation metrics  
+- Deploy as an API for real-time prediction  
+
+---
+---
+
 ## 🌐 Live Application
 
 **Try it now:** [https://networksecurityx.vercel.app/](https://networksecurityx.vercel.app/)
 
 Interactive web interface for phishing detection with real-time predictions, model training, and dataset exploration.
+
+---
+## Dataset
+- **Source: UC Irvine(https://archive.ics.uci.edu/dataset/327/phishing+websites)
+- **Observations:** Dynamic dataset  
+- **Variables:** 31 features
+
+  
+## 💻 Tech Stack & Python → R Translation
+
+For developers coming from the Python ecosystem, here is how the stack translates:
+
+| Concept / Tool | Python Stack | R Stack |
+|:---|:---|:---|
+| **Web API** | `FastAPI` | `plumber` |
+| **Data Structures** | `pandas.DataFrame` | `data.frame` |
+| **Imputation** | `sklearn KNNImputer` | `caret::preProcess(knnImpute)` |
+| **Hyperparameter Tuning**| `GridSearchCV` | `caret::train` + `tuneGrid` |
+| **Serialization** | `pickle` | `saveRDS` / `readRDS` |
+| **Experiment Tracking** | `mlflow` (Python) | `mlflow` (R SDK) |
 
 ---
 
@@ -25,7 +69,7 @@ Modern cybersecurity relies on rapid, accurate detection of threats. This projec
 
 ---
 
-## 🏗️ Architecture at a Glance
+## 🏗️ Methodology(Architecture)
 
 Our system is structured into several robust, scalable components:
 - **Data Layer:** Ingests live data safely from MongoDB.
@@ -44,19 +88,24 @@ Our system is structured into several robust, scalable components:
 5. **📊 Tracking:** Every experiment is logged to **MLflow** for total reproduceability.
 
 ---
+### Models Used
+- Random Forest  
+- Decision Tree  
+- Gradient Boosting (GBM)  
+- Logistic Regression
+- C5.0
+  
+### Evaluation Methods
+- F1 Score (primary metric)  
+- Model comparison  
+- Hyperparameter tuning 
 
-## 💻 Tech Stack & Python → R Translation
+---
 
-For developers coming from the Python ecosystem, here is how the stack translates:
-
-| Concept / Tool | Python Stack | R Stack |
-|:---|:---|:---|
-| **Web API** | `FastAPI` | `plumber` |
-| **Data Structures** | `pandas.DataFrame` | `data.frame` |
-| **Imputation** | `sklearn KNNImputer` | `caret::preProcess(knnImpute)` |
-| **Hyperparameter Tuning**| `GridSearchCV` | `caret::train` + `tuneGrid` |
-| **Serialization** | `pickle` | `saveRDS` / `readRDS` |
-| **Experiment Tracking** | `mlflow` (Python) | `mlflow` (R SDK) |
+## Results
+- Multiple models were trained and evaluated  
+- Best model selected based on F1 Score (C5.0)  
+- High accuracy in phishing detection  
 
 ---
 
