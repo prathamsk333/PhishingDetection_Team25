@@ -14,7 +14,7 @@
 ## Team Members
 
 - Pratham – 2023BCS0201
-- Akhil – 2023BCD0015
+- Akhil – 2023BCD0018
 - Arjun – 2023BCS0135
 - Aryan – 2023BCD0012
 
@@ -210,7 +210,7 @@ npm run dev
 |Aryan|2023BCD0012|Data ingestion from MongoDB, data preprocessing, initial EDA, PPT preparation|
 |Pratham|2023BCS0201|Data transformation, feature engineering, data validation|
 |Arjun|2023BCS0135|Model training, hyperparameter tuning, model evaluation, artifact generation|
-|Akhil|2023BCD0015|Frontend development, API implementation using Plumber, model integration, deployment|
+|Akhil|2023BCD0018|Frontend development, API implementation using Plumber, model integration, deployment|
 
 ---
 
